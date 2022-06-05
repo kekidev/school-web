@@ -15,6 +15,7 @@ import {
   useColorMode,
   BoxProps,
   FlexProps,
+  chakra,
 } from "@chakra-ui/react";
 import { FiHome, FiMenu, FiMoon, FiSun } from "react-icons/fi";
 import { MdLunchDining } from "react-icons/md";
@@ -22,12 +23,18 @@ import { AiFillCalendar } from "react-icons/ai";
 
 import { IconType } from "react-icons";
 import { ReactText } from "react";
+import { isValidMotionProp, motion } from "framer-motion";
 
 interface LinkItemProps {
   name: string;
   icon: IconType;
   link: string;
 }
+
+const AnimatedBtn = chakra(motion.button, {
+  shouldForwardProp: (prop) => isValidMotionProp(prop) || prop === "children",
+});
+
 const LinkItems: Array<LinkItemProps> = [
   { name: "홈", icon: FiHome, link: "/" },
   { name: "급식 알리미", icon: MdLunchDining, link: "/lunch" },
@@ -95,7 +102,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
         key={"test"}
         icon={colorMode == "dark" ? FiSun : FiMoon}
         onClick={toggleColorMode}
-        link="#"
+        link=""
       >
         다크모드
       </NavItem>
@@ -110,37 +117,46 @@ interface NavItemProps extends FlexProps {
 }
 const NavItem = ({ icon, children, link, ...rest }: NavItemProps) => {
   return (
-    <Link
-      href={link}
-      style={{ textDecoration: "none" }}
-      _focus={{ boxShadow: "none" }}
+    <AnimatedBtn
+      width={"200px"}
+      whileHover={{
+        scale: 1.1,
+        transition: { duration: 0.2 },
+      }}
+      whileTap={{ scale: 1 }}
     >
-      <Flex
-        align="center"
-        p="4"
-        mx="4"
-        borderRadius="lg"
-        role="group"
-        cursor="pointer"
-        _hover={{
-          bg: "cyan.400",
-          color: "white",
-        }}
-        {...rest}
+      <Link
+        href={link}
+        style={{ textDecoration: "none" }}
+        _focus={{ boxShadow: "none" }}
       >
-        {icon && (
-          <Icon
-            mr="4"
-            fontSize="16"
-            _groupHover={{
-              color: "white",
-            }}
-            as={icon}
-          />
-        )}
-        {children}
-      </Flex>
-    </Link>
+        <Flex
+          align="center"
+          p="4"
+          mx="4"
+          borderRadius="lg"
+          role="group"
+          cursor="pointer"
+          _hover={{
+            bg: "cyan.400",
+            color: "white",
+          }}
+          {...rest}
+        >
+          {icon && (
+            <Icon
+              mr="4"
+              fontSize="16"
+              _groupHover={{
+                color: "white",
+              }}
+              as={icon}
+            />
+          )}
+          {children}
+        </Flex>
+      </Link>
+    </AnimatedBtn>
   );
 };
 
